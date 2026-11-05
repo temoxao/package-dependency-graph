@@ -151,6 +151,37 @@ def build_graph(dependencies, package, filter_substring, test_mode, version, rep
 
     return graph
 
+# поиск обратных зависимостей с помощью BFS
+def find_reverse_dependencies(graph, package):
+    reverse_graph = {}
+
+    # строим обратный граф
+    for current_package, dependencies in graph.items():
+        for dependency in dependencies:
+            if dependency not in reverse_graph:
+                reverse_graph[dependency] = []
+
+            reverse_graph[dependency].append(current_package)
+
+    reverse_dependencies = []
+    queue = deque(reverse_graph.get(package, []))
+    visited = {package}
+
+    # выполняем BFS
+    while queue:
+        current = queue.popleft()
+
+        if current in visited:
+            continue
+
+        visited.add(current)
+        reverse_dependencies.append(current)
+
+        for dependency in reverse_graph.get(current, []):
+            if dependency not in visited:
+                queue.append(dependency)
+
+    return reverse_dependencies
 
 #вывод зависимостей
 def print_dependencies(dependencies):
@@ -190,7 +221,23 @@ def main():
     )
 
     print("Граф зависимостей:")
-    print(graph)
+    print(json.dumps(graph, indent=4, ensure_ascii=False))
+
+    reverse_package = input(
+        "Введите название пакета для поиска обратных зависимостей: "
+    )
+
+    reverse_dependencies = find_reverse_dependencies(
+        graph, reverse_package
+    )
+
+    print(f"Обратные зависимости пакета {reverse_package}:")
+
+    if reverse_dependencies:
+        for dependency in reverse_dependencies:
+            print(dependency)
+    else:
+        print("Обратных зависимостей не найдено")
 
 if __name__ == "__main__":
     main()
