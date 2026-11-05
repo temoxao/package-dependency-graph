@@ -2,6 +2,7 @@ import argparse #модуль для обработки аргументов к�
 import json #обрабатывает json
 import urllib.request #отправка HTTP-запросов
 import urllib.parse #разбор, создание и обработка URL-адресов
+from collections import deque #структура данных очереди
 
 #проверка что поле не пустое и не состоит из пробелов
 def check_not_empty(value):
@@ -51,10 +52,105 @@ def get_dependencies(package, version, repository):
         }
     )
 
-    with urllib.request.urlopen(request) as response:
+    with urllib.request.urlopen(request, timeout=30) as response:
         data = json.loads(response.read().decode("utf-8"))
 
     return data["dependencies"]
+
+
+# получение последней версии пакета
+def get_latest_version(package, repository):
+    parsed_url = urllib.parse.urlsplit(repository)
+
+    api_url = (
+        f"{parsed_url.scheme}://{parsed_url.netloc}"
+        f"/api/v1/crates/{package}"
+    )
+
+    request = urllib.request.Request(
+        api_url,
+        headers={
+            "User-Agent": "package-dependency-graph"
+        }
+    )
+
+    with urllib.request.urlopen(request, timeout=30) as response:
+        data = json.loads(response.read().decode("utf-8"))
+
+    crate = data["crate"]
+
+    return crate.get("max_stable_version") or crate["max_version"]
+
+
+#функция получения зависимостей из тестового репозитория
+def get_test_dependencies(repository):
+    with open(repository, "r", encoding="utf-8") as file:
+        data = json.load(file)
+
+    return data
+
+
+#построение графа зависимостей с помощью BFS
+def build_graph(dependencies, package, filter_substring, test_mode, version, repository):
+    graph = {}
+    queue = deque([package])
+    visited = set()
+    max_packages = 10
+
+    while queue:
+        current = queue.popleft()
+
+        if current in visited:
+            continue
+
+        visited.add(current)
+        print(f"Обрабатывается пакет: {current}")
+
+        if len(visited) > max_packages:
+            break
+
+        if filter_substring in current:
+            continue
+
+        #получаем зависимости текущего пакета
+        if test_mode:
+            current_dependencies = dependencies.get(current, [])
+
+        else:
+            if current == package:
+                current_version = version
+            else:
+                print(f"Получаем версию пакета {current}...")
+                current_version = get_latest_version(current, repository)
+                print(f"Получена версия: {current_version}")
+
+            print(f"Получаем зависимости пакета {current}...")
+
+            current_dependencies = get_dependencies(
+                current, current_version, repository
+            )
+
+            print(f"Получено зависимостей: {len(current_dependencies)}")
+
+            #оставляем только названия пакетов
+            current_dependencies = [
+                dependency["crate_id"]
+                for dependency in current_dependencies
+            ]
+
+        graph[current] = []
+
+        for dependency in current_dependencies:
+            if filter_substring in dependency:
+                continue
+
+            graph[current].append(dependency)
+
+            if dependency not in visited:
+                queue.append(dependency)
+
+    return graph
+
 
 #вывод зависимостей
 def print_dependencies(dependencies):
@@ -79,13 +175,22 @@ def main():
     print(f"output: {args.output}")
     print(f"filter: {args.filter}")
 
-    dependencies = get_dependencies(
-            args.package,
-            args.version,
-            args.repository
+    if args.test_mode:
+        dependencies = get_test_dependencies(args.repository)
+    else:
+        dependencies = None
+
+    graph = build_graph(
+        dependencies,
+        args.package,
+        args.filter,
+        args.test_mode,
+        args.version,
+        args.repository
     )
 
-    print_dependencies(dependencies)
+    print("Граф зависимостей:")
+    print(graph)
 
 if __name__ == "__main__":
     main()
