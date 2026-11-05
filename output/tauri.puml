@@ -1,0 +1,182 @@
+@startuml
+
+rectangle "aes-gcm" as package_0
+rectangle "anyhow" as package_1
+rectangle "base64" as package_2
+rectangle "bytes" as package_3
+rectangle "cargo_toml" as package_4
+rectangle "cfg-if" as package_5
+rectangle "cookie" as package_6
+rectangle "data-url" as package_7
+rectangle "dirs" as package_8
+rectangle "dirs-sys" as package_9
+rectangle "doc-comment" as package_10
+rectangle "dunce" as package_11
+rectangle "embed_plist" as package_12
+rectangle "futures" as package_13
+rectangle "getrandom" as package_14
+rectangle "glob" as package_15
+rectangle "gtk" as package_16
+rectangle "heck" as package_17
+rectangle "hkdf" as package_18
+rectangle "hmac" as package_19
+rectangle "http" as package_20
+rectangle "http-range" as package_21
+rectangle "image" as package_22
+rectangle "jni" as package_23
+rectangle "js-sys" as package_24
+rectangle "libc" as package_25
+rectangle "log" as package_26
+rectangle "loom" as package_27
+rectangle "mime" as package_28
+rectangle "muda" as package_29
+rectangle "objc2" as package_30
+rectangle "objc2-app-kit" as package_31
+rectangle "objc2-foundation" as package_32
+rectangle "objc2-ui-kit" as package_33
+rectangle "objc2-web-kit" as package_34
+rectangle "percent-encoding" as package_35
+rectangle "plist" as package_36
+rectangle "portable-atomic" as package_37
+rectangle "quickcheck" as package_38
+rectangle "quickcheck_macros" as package_39
+rectangle "r-efi" as package_40
+rectangle "rand" as package_41
+rectangle "rand_core" as package_42
+rectangle "raw-window-handle" as package_43
+rectangle "reqwest" as package_44
+rectangle "rustls" as package_45
+rectangle "rustversion" as package_46
+rectangle "semver" as package_47
+rectangle "serde" as package_48
+rectangle "serde_json" as package_49
+rectangle "serde_repr" as package_50
+rectangle "serialize-to-javascript" as package_51
+rectangle "sha2" as package_52
+rectangle "specta" as package_53
+rectangle "subtle" as package_54
+rectangle "swift-rs" as package_55
+rectangle "syn" as package_56
+rectangle "tauri" as package_57
+rectangle "tauri-build" as package_58
+rectangle "tauri-macros" as package_59
+rectangle "tauri-runtime" as package_60
+rectangle "tauri-runtime-wry" as package_61
+rectangle "tauri-utils" as package_62
+rectangle "tempfile" as package_63
+rectangle "thiserror" as package_64
+rectangle "time" as package_65
+rectangle "tokio" as package_66
+rectangle "toml" as package_67
+rectangle "tracing" as package_68
+rectangle "tray-icon" as package_69
+rectangle "trybuild" as package_70
+rectangle "url" as package_71
+rectangle "uuid" as package_72
+rectangle "version_check" as package_73
+rectangle "wasm-bindgen" as package_74
+rectangle "webkit2gtk" as package_75
+rectangle "webview2-com" as package_76
+rectangle "window-vibrancy" as package_77
+rectangle "windows" as package_78
+
+package_57 --> package_1
+package_57 --> package_3
+package_57 --> package_4
+package_57 --> package_6
+package_57 --> package_8
+package_57 --> package_11
+package_57 --> package_12
+package_57 --> package_14
+package_57 --> package_15
+package_57 --> package_15
+package_57 --> package_16
+package_57 --> package_17
+package_57 --> package_17
+package_57 --> package_20
+package_57 --> package_21
+package_57 --> package_23
+package_57 --> package_25
+package_57 --> package_26
+package_57 --> package_28
+package_57 --> package_29
+package_57 --> package_30
+package_57 --> package_31
+package_57 --> package_32
+package_57 --> package_33
+package_57 --> package_34
+package_57 --> package_35
+package_57 --> package_36
+package_57 --> package_38
+package_57 --> package_39
+package_57 --> package_43
+package_57 --> package_44
+package_57 --> package_48
+package_57 --> package_48
+package_57 --> package_49
+package_57 --> package_49
+package_57 --> package_50
+package_57 --> package_51
+package_57 --> package_55
+package_57 --> package_58
+package_57 --> package_59
+package_57 --> package_60
+package_57 --> package_62
+package_57 --> package_62
+package_57 --> package_64
+package_57 --> package_66
+package_57 --> package_66
+package_57 --> package_71
+package_57 --> package_77
+package_57 --> package_77
+package_57 --> package_78
+package_57 --> package_7
+package_57 --> package_21
+package_57 --> package_22
+package_57 --> package_45
+package_57 --> package_53
+package_57 --> package_61
+package_57 --> package_68
+package_57 --> package_69
+package_57 --> package_72
+package_57 --> package_75
+package_57 --> package_76
+package_1 --> package_13
+package_1 --> package_46
+package_1 --> package_56
+package_1 --> package_64
+package_1 --> package_70
+package_3 --> package_27
+package_3 --> package_37
+package_3 --> package_48
+package_4 --> package_47
+package_4 --> package_48
+package_4 --> package_67
+package_6 --> package_65
+package_6 --> package_73
+package_6 --> package_0
+package_6 --> package_2
+package_6 --> package_18
+package_6 --> package_19
+package_6 --> package_35
+package_6 --> package_41
+package_6 --> package_52
+package_6 --> package_54
+package_8 --> package_9
+package_14 --> package_5
+package_14 --> package_25
+package_14 --> package_25
+package_14 --> package_25
+package_14 --> package_25
+package_14 --> package_25
+package_14 --> package_25
+package_14 --> package_25
+package_14 --> package_25
+package_14 --> package_40
+package_14 --> package_24
+package_14 --> package_42
+package_14 --> package_74
+package_15 --> package_10
+package_15 --> package_63
+
+@enduml

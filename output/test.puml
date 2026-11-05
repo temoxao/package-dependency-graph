@@ -1,0 +1,18 @@
+@startuml
+
+rectangle "A" as package_0
+rectangle "B" as package_1
+rectangle "C" as package_2
+rectangle "D" as package_3
+rectangle "E" as package_4
+rectangle "F" as package_5
+rectangle "G" as package_6
+
+package_0 --> package_1
+package_0 --> package_2
+package_1 --> package_3
+package_1 --> package_4
+package_2 --> package_5
+package_3 --> package_6
+
+@enduml

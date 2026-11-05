@@ -3,6 +3,8 @@ import json #обрабатывает json
 import urllib.request #отправка HTTP-запросов
 import urllib.parse #разбор, создание и обработка URL-адресов
 from collections import deque #структура данных очереди
+from pathlib import Path #модуль работы с путями и файлами
+import subprocess #сохраняет текст в .puml и запускает PlantUML для создания .png
 
 #проверка что поле не пустое и не состоит из пробелов
 def check_not_empty(value):
@@ -151,6 +153,60 @@ def build_graph(dependencies, package, filter_substring, test_mode, version, rep
 
     return graph
 
+#преобразует граф в текст PlantUML
+def generate_plantuml(graph):
+    nodes = set(graph.keys())
+
+    for dependencies in graph.values():
+        nodes.update(dependencies)
+
+    node_ids = {
+        package: f"package_{i}"
+        for i, package in enumerate(sorted(nodes))
+    }
+
+    lines = ["@startuml", ""]
+
+    # создаём узлы
+    for package, node_id in node_ids.items():
+        lines.append(f'rectangle "{package}" as {node_id}')
+
+    lines.append("")
+
+    # создаём связи между пакетами
+    for package, dependencies in graph.items():
+        for dependency in dependencies:
+            lines.append(
+                f"{node_ids[package]} --> {node_ids[dependency]}"
+            )
+
+    lines.append("")
+    lines.append("@enduml")
+
+    return "\n".join(lines)
+
+# сохранение PlantUML и создание PNG
+def save_graph(graph, output):
+    plantuml_code = generate_plantuml(graph)
+
+    output_file = Path(output)
+
+    output_dir = output_file.parent
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    puml_file = output_file.with_suffix(".puml")
+
+    with open(puml_file, "w", encoding="utf-8") as file:
+        file.write(plantuml_code)
+
+    subprocess.run(
+        ["plantuml", "-tpng", str(puml_file)],
+        check=True
+    )
+
+    print(f"PlantUML сохранён: {puml_file}")
+    print(f"Изображение сохранено: {output_file.with_suffix('.png')}")
+
 # поиск обратных зависимостей с помощью BFS
 def find_reverse_dependencies(graph, package):
     reverse_graph = {}
@@ -222,6 +278,8 @@ def main():
 
     print("Граф зависимостей:")
     print(json.dumps(graph, indent=4, ensure_ascii=False))
+
+    save_graph(graph, args.output)
 
     reverse_package = input(
         "Введите название пакета для поиска обратных зависимостей: "
