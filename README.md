@@ -763,7 +763,7 @@ git switch --detach 7941f18
 
 #### Этап 5
 ```
-git switch --detach 98da2a4
+git switch --detach 8e9ed6d
 ```
 
 
