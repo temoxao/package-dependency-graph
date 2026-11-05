@@ -1,5 +1,7 @@
-#модуль для обработки аргументов командной строки
-import argparse
+import argparse #модуль для обработки аргументов командной строки
+import json #обрабатывает json
+import urllib.request #отправка HTTP-запросов
+import urllib.parse #разбор, создание и обработка URL-адресов
 
 #проверка что поле не пустое и не состоит из пробелов
 def check_not_empty(value):
@@ -32,6 +34,41 @@ def parse_arguments():
     return parser.parse_args()
 
 
+#функция получения зависимостей
+def get_dependencies(package, version, repository):
+    # Преобразуем адрес страницы crates.io в адрес API
+    parsed_url = urllib.parse.urlsplit(repository)
+
+    api_url = (
+        f"{parsed_url.scheme}://{parsed_url.netloc}"
+        f"/api/v1/crates/{package}/{version}/dependencies"
+    )
+    #создаем HTTP-запрос к серверу
+    request = urllib.request.Request(
+        api_url,
+        headers={
+            "User-Agent": "package-dependency-graph"
+        }
+    )
+
+    with urllib.request.urlopen(request) as response:
+        data = json.loads(response.read().decode("utf-8"))
+
+    return data["dependencies"]
+
+#вывод зависимостей
+def print_dependencies(dependencies):
+    print("Прямые зависимости:")
+
+    for dependency in dependencies:
+        print(
+            f"{dependency['crate_id']} — "
+            f"версия: {dependency['req']}, "
+            f"тип: {dependency['kind']}, "
+            f"необязательная: {dependency['optional']}"
+        )
+
+
 def main():
     args = parse_arguments()
 
@@ -42,6 +79,13 @@ def main():
     print(f"output: {args.output}")
     print(f"filter: {args.filter}")
 
+    dependencies = get_dependencies(
+            args.package,
+            args.version,
+            args.repository
+    )
+
+    print_dependencies(dependencies)
 
 if __name__ == "__main__":
     main()
