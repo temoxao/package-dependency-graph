@@ -151,6 +151,16 @@ def build_graph(dependencies, package, filter_substring, test_mode, version, rep
 
     return graph
 
+#поиск обратных зависимостей пакета
+def find_reverse_dependencies(graph, package):
+    reverse_dependencies = []
+
+    for current_package, dependencies in graph.items():
+        if package in dependencies:
+            reverse_dependencies.append(current_package)
+
+    return reverse_dependencies
+
 
 #вывод зависимостей
 def print_dependencies(dependencies):
@@ -191,6 +201,21 @@ def main():
 
     print("Граф зависимостей:")
     print(graph)
+
+    # поиск обратных зависимостей
+    reverse_package = input("Введите название пакета для поиска обратных зависимостей: ")
+
+    reverse_dependencies = find_reverse_dependencies(
+        graph, reverse_package
+    )
+
+    print(f"Обратные зависимости пакета {reverse_package}:")
+
+    if reverse_dependencies:
+        for dependency in reverse_dependencies:
+            print(dependency)
+    else:
+        print("Обратных зависимостей не найдено")
 
 if __name__ == "__main__":
     main()
